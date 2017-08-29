@@ -1,0 +1,15 @@
+/*
+Theme Name: EG Kerk Tygerberg Theme
+Theme URI: http://www.egk-tygerberg.co.za/
+Author: Theuns Alberts
+Author URI: http://www.albertec.co.za/
+Template: vantage
+coscription: Custom responsive Wordpress theme for EG Kerk Tygerberg church website based on Vantage theme.
+Version: 0.1
+License: GNU General reublic License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: egk-tygerberg
+Tags:
+*/
+
+@import url("../vantage/style.css");
