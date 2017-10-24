@@ -58,22 +58,55 @@
             $maand = $date_parts[1];
             $jaar = $date_parts[0];
 
+			// TA-20170913: Gaan van nou af preke op egk.tygerberg se google drive laai
+			// So moet voorsien vir beide as daar 'n file is en net die gdrive link tot
+            // en wyl ons al die files ook geskuif het na gdrive maar is makliker om die
+            // preek files te los waar dit is vir nou.
+
             $file_id = get_post_meta( $post_id, 'preek_file', true );
-            $file = wp_get_attachment_url( $file_id );
+			if (empty($file_id)) {
+                $file = "";
+            	$url = get_post_meta( $post_id, 'preek_url', true );
+                
+            	//echo $url;
+            	if (preg_match("/https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_]+)/", $url, $match)) {
+                   $GoogleDriveFileID = $match[1];
+                   $url_play = "https://docs.google.com/uc?export=open&id=" . $GoogleDriveFileID;
+                   $url_download = "https://docs.google.com/uc?export=download&id=" . $GoogleDriveFileID;
 
-            // $url = get_post_meta( $post_id, 'preek_url', true );
+                   $ch = curl_init();
+                   curl_setopt($ch, CURLOPT_URL, $url_play);
+                   curl_setopt($ch, CURLOPT_HEADER  ,1);
+                   curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
+                   curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
+                   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                   $content = curl_exec($ch);
+                   //print_r($content);
+                   // get cookies
+                   $cookies = array();
+                   preg_match_all('/Set-Cookie:(?<cookie>\s{0,}.*)$/im', $content, $cookies);
+                   //print_r($cookies['cookie']); // show harvested cookies
+                   $warning = trim(substr($cookies['cookie'][0],0,17));
 
-            // echo $url;
-            // if (preg_match("/https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_]+)/", $url, $match)) {
-            //     echo "found";
-            //     $GoogleDriveFileID = $match[1];
-            //     $url_play = "https://docs.google.com/uc?export=open&id=" . $GoogleDriveFileID;
-            //     $url_download = "https://docs.google.com/uc?export=download&id=" . $GoogleDriveFileID;
-            // } else {
-            //     echo "not found";
-            //     $url_play = "";
-            //     $url_download = "";
-            // }
+                   if($warning == "download_warning"){
+                      $token = explode('=', $cookies['cookie'][0], 2);
+                      $token = explode(';', $token[1], 2);
+                      //print_r($token);
+                      $token = trim($token[0], ';');
+                      //echo "TOKEN: $token";
+                      $url_play = "https://docs.google.com/uc?export=open&confirm=" . $token . "&id=" . $GoogleDriveFileID;
+                      $url_download = "https://docs.google.com/uc?export=download&confirm=" . $token . "&id=" . $GoogleDriveFileID;
+                   }
+                } else {
+                   echo "error, file not found";
+                   $url_play = "";
+                   $url_download = "";
+               }
+			} else {
+            	$file = wp_get_attachment_url( $file_id );
+			}
+
+
           ?>
           <div class="box box_effect">
             <div class="preek_datum date">
@@ -113,18 +146,21 @@
             </div> <!-- div .preek_detail -->
             <div class="preek_widgets">
                 <?php
-                    // $content = ''
-                    //     . '<audio controls>'
-                    //     . '<source src="' . $url_play . '" type="audio/mpeg">'
-                    //     . 'Aanlyn luister nie beskikbaar in jou browser.'
-                    //     . '</audio>'
-                    //     . '<a class="fa fa-download fa-2x" href="' . $url_download . '"></a>';
-                    $content = ''
+					if (empty($file)) {
+                       $content = ''
+                           . '<audio controls preload="metadata">'
+                           . '<source src="' . $url_play . '" type="audio/mpeg">'
+                           . 'Aanlyn luister nie beskikbaar in jou browser.'
+                           . '</audio>'
+                           . '<a class="fa fa-download fa-2x" href="' . $url_download . '"></a>';
+                     } else {
+                       $content = ''
                         . '<audio controls>'
                         . '<source src="' . $file . '" type="audio/mpeg">'
                         . 'Aanlyn luister nie beskikbaar in jou browser.'
                         . '</audio>'
                         . '<a class="fa fa-download fa-2x" href="' . $file . '"></a>';
+                    }
                     echo $content;
                 ?>
             </div> <!-- div .preek_widgets -->
