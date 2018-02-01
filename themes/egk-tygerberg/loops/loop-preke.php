@@ -11,24 +11,62 @@
      Preke wat reeds opgelaai is, is nogsteeds beskikbaar soos altyd.</h3>
 </div> -->
 
-<?php
+<div class="box box-effect">
+  <h2>Kennisgewing - 1 Feb 2018:</h2>
+  <h3>Dankie vir u geduld. Die preke funksionaliteit is weer herstel.</h3>
+  <h3>Heel nuutste preke sal binnekort gelaai word. Ons is ook besig om andere op te lei.</h3>
+  <h3>Dankie vir u geduld.</h3>
+</div>
 
-    global $query_string;
+ 
+ <?php
+ 
+ function play($post_id) {
 
-    /*$args = array(
-      'post_type' => 'preek',
-      'meta_key' => 'preek_prediker'
-    );
-    $posts_array = get_posts( $args );
-    $predikers = array();
-    foreach($posts_array as $pa) {
-      array_push($predikers, get_post_meta( $pa->ID, 'preek_prediker', true ));
-    }
-    $predikers = array_unique($predikers);
-    print_r($predikers);*/
+	// TA-20170913: Gaan van nou af preke op egk.tygerberg se google drive laai
+	// So moet voorsien vir beide as daar 'n file is en net die gdrive link tot
+    // en wyl ons al die files ook geskuif het na gdrive maar is makliker om die
+    // preek files te los waar dit is vir nou.
 
-    /*query_posts( $query_string . '&order=ASC' );*/
-    /*query_posts('&meta_key=datum&orderby=meta_value' );*/
+    $url = get_post_meta( $post_id, 'preek_url', true );
+
+    if (preg_match("/https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_]+)/", $url, $match)) {
+         $GoogleDriveFileID = $match[1];
+         $url_play = "https://docs.google.com/uc?export=open&id=" . $GoogleDriveFileID;
+         $url_download = "https://docs.google.com/uc?export=download&id=" . $GoogleDriveFileID;
+
+         //$ch = curl_init();
+         //curl_setopt($ch, CURLOPT_URL, $url_play);
+         ////curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+         ////curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+         //curl_setopt($ch, CURLOPT_HEADER  ,1);
+         //curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
+         //curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
+         //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+         //$content = curl_exec($ch);
+         ////curl_close($ch);
+         //print_r($content);
+         //// get cookies
+         //$cookies = array();
+         //preg_match_all('/Set-Cookie:(?<cookie>\s{0,}.*)$/im', $content, $cookies);
+         //print_r($cookies['cookie']); // show harvested cookies
+         //$warning = trim(substr($cookies['cookie'][0],0,17));
+
+         //if($warning == "download_warning"){
+         //   $token = explode('=', $cookies['cookie'][0], 2);
+         //   $token = explode(';', $token[1], 2);
+         //   print_r($token);
+         //   $token = trim($token[0], ';');
+         //   echo "TOKEN: $token";
+         //   $url_play = "https://docs.google.com/uc?export=open&confirm=" . $token . "&id=" . $GoogleDriveFileID;
+         //   $url_download = "https://docs.google.com/uc?export=download&confirm=" . $token . "&id=" . $GoogleDriveFileID;
+         //}
+      } else {
+         $url_play = "";
+         $url_download = "";
+     }
+     return [$url_play, $url_download];
+ }
 ?>
 
 </html>
@@ -66,47 +104,10 @@
             $file_id = get_post_meta( $post_id, 'preek_file', true );
 			if (empty($file_id)) {
                 $file = "";
-            	$url = get_post_meta( $post_id, 'preek_url', true );
-                
-            	//echo $url;
-            	if (preg_match("/https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_]+)/", $url, $match)) {
-                   $GoogleDriveFileID = $match[1];
-                   $url_play = "https://docs.google.com/uc?export=open&id=" . $GoogleDriveFileID;
-                   $url_download = "https://docs.google.com/uc?export=download&id=" . $GoogleDriveFileID;
-
-                   $ch = curl_init();
-                   curl_setopt($ch, CURLOPT_URL, $url_play);
-                   curl_setopt($ch, CURLOPT_HEADER  ,1);
-                   curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
-                   curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
-                   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                   $content = curl_exec($ch);
-                   //print_r($content);
-                   // get cookies
-                   $cookies = array();
-                   preg_match_all('/Set-Cookie:(?<cookie>\s{0,}.*)$/im', $content, $cookies);
-                   //print_r($cookies['cookie']); // show harvested cookies
-                   $warning = trim(substr($cookies['cookie'][0],0,17));
-
-                   if($warning == "download_warning"){
-                      $token = explode('=', $cookies['cookie'][0], 2);
-                      $token = explode(';', $token[1], 2);
-                      //print_r($token);
-                      $token = trim($token[0], ';');
-                      //echo "TOKEN: $token";
-                      $url_play = "https://docs.google.com/uc?export=open&confirm=" . $token . "&id=" . $GoogleDriveFileID;
-                      $url_download = "https://docs.google.com/uc?export=download&confirm=" . $token . "&id=" . $GoogleDriveFileID;
-                   }
-                } else {
-                   echo "error, file not found";
-                   $url_play = "";
-                   $url_download = "";
-               }
 			} else {
-            	$file = wp_get_attachment_url( $file_id );
+            	$file = wp_get_attachment_url($file_id);
 			}
-
-
+            [$play_url, $download_url] = play($post_id);
           ?>
           <div class="box box_effect">
             <div class="preek_datum date">
@@ -133,14 +134,14 @@
             <div class="preek_detail">
                 <?php
                 $title = the_title('', '', false);
-                $content = '<h2>';
-                $content .= $title . '</h2>';
+                $content = '<h2>' . $title . '</h2>';
                 if ( !empty($reeks) )
                       $content .= '<p class="reeks">' . $reeks . '</p>';
                 $content .= ''
                     . '<p class="prediker">' . $prediker . '</p>'
-                    . '<p class="skriflesing">' . $skriflesing . '</p>'
-                    . '<p class="beskrywing">' . $beskrywing . '</p>';
+                    . '<p class="skriflesing">' . $skriflesing . '</p>';
+			    if ( !empty($beskrywing) )
+                    $content .= '<p class="beskrywing">' . $beskrywing . '</p>';
                 echo $content;
                 ?>
             </div> <!-- div .preek_detail -->
@@ -148,18 +149,12 @@
                 <?php
 					if (empty($file)) {
                        $content = ''
-                           . '<audio controls preload="metadata">'
-                           . '<source src="' . $url_play . '" type="audio/mpeg">'
-                           . 'Aanlyn luister nie beskikbaar in jou browser.'
-                           . '</audio>'
-                           . '<a class="fa fa-download fa-2x" href="' . $url_download . '"></a>';
+                         . '<div style="display: inline-block"><a style="text-decoration:none; padding-left: 0px" class="fa fa-play fa-2x" href="' . $play_url . '"></a></div>'
+                         . '<div style="display: inline-block; padding-left: 15px"><a style="text-decoration:none" class="fa fa-download fa-2x" href="' . $download_url . '"></a></div>';
                      } else {
                        $content = ''
-                        . '<audio controls>'
-                        . '<source src="' . $file . '" type="audio/mpeg">'
-                        . 'Aanlyn luister nie beskikbaar in jou browser.'
-                        . '</audio>'
-                        . '<a class="fa fa-download fa-2x" href="' . $file . '"></a>';
+                         . '<div style="display: inline-block"><a style="text-decoration:none; padding-left: 0px" class="fa fa-play fa-2x" href="' . $file . '"></a></div>'
+                         . '<div style="display: inline-block; padding-left: 15px"><a style="text-decoration:none" class="fa fa-download fa-2x" href="' . $file . '"></a></div>';
                     }
                     echo $content;
                 ?>
