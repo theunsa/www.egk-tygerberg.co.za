@@ -107,7 +107,9 @@
 			} else {
             	$file = wp_get_attachment_url($file_id);
 			}
-            [$play_url, $download_url] = play($post_id);
+            $urls = play($post_id);
+            $play_url = $urls[0];
+            $download_url = $urls[1];
           ?>
           <div class="box box_effect">
             <div class="preek_datum date">
@@ -154,7 +156,7 @@
                      } else {
                        $content = ''
                          . '<div style="display: inline-block"><a style="text-decoration:none; padding-left: 0px" class="fa fa-play fa-2x" href="' . $file . '"></a></div>'
-                         . '<div style="display: inline-block; padding-left: 15px"><a style="text-decoration:none" class="fa fa-download fa-2x" href="' . $file . '"></a></div>';
+                         . '<div style="display: inline-block; padding-left: 15px"><a style="text-decoration:none" class="fa fa-download fa-2x" href="' . $file . '" download></a></div>';
                     }
                     echo $content;
                 ?>
