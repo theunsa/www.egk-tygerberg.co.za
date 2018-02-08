@@ -240,6 +240,17 @@ function preek_register_meta_boxes( $meta_boxes )
                 'id'               => "{$prefix}url",
                 'type'  => 'url',
                 'placeholder'  => 'Paste Preek URL hier',
+                'desc'		   =>
+                    '<b>Stappe om preek op te laai:</b>' .
+                '<ol>' .
+                '<li>Laai die preek file op <a href="https://drive.google.com/open?id=0B3rqdpUizru9SUp5V0xEal81dEk">Google Drive</a> (jy het regte nodig)' .
+                    '<ol style="list-style-type: lower-roman">' .
+                    '<li>Laai die preek in die regte jaar directory bv <i>Preke/2017/</i></li>' .
+                    '</ol>' .
+                '</li>' .
+                '<li>Regs-kliek op die preek file wat opgelaai is en kies "Kry deelbare skakel" ("Get shareable link")' .
+                '<li>Paste die link in die "Preek URL" veld.</li>' .
+                '</ol>',
             ),
            // FILE ADVANCED (WP 3.5+)
             // array(
