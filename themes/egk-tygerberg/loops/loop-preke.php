@@ -14,7 +14,7 @@
 <div class="box box-effect">
   <h2>Kennisgewing - 1 Feb 2018:</h2>
   <h3>Dankie vir u geduld. Die preke funksionaliteit is weer herstel.</h3>
-  <h3>Heel nuutste preke sal binnekort gelaai word. Ons is ook besig om andere op te lei.</h3>
+  <h3>Heel nuutste preke is besig om gelaai te word. Ons is ook besig om andere op te lei om ons hiermee te help in toekoms.</h3>
   <h3>Dankie vir u geduld.</h3>
 </div>
 
@@ -30,7 +30,7 @@
 
     $url = get_post_meta( $post_id, 'preek_url', true );
 
-    if (preg_match("/https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_]+)/", $url, $match)) {
+    if (preg_match("/https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_-]+)/", $url, $match)) {
          $GoogleDriveFileID = $match[1];
          $url_play = "https://docs.google.com/uc?export=open&id=" . $GoogleDriveFileID;
          $url_download = "https://docs.google.com/uc?export=download&id=" . $GoogleDriveFileID;
