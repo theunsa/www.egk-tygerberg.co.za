@@ -68,7 +68,9 @@ get_header(); ?>
                 } else {
                     $file = wp_get_attachment_url($file_id);
                 }
-                [$play_url, $download_url] = play($post_id);
+                $urls = play($post_id);
+                $play_url = $urls[0];
+                $download_url = $urls[1];
             ?>
                 <div class="box box_effect">
                     <div class="preek_datum date">
