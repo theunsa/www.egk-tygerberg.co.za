@@ -34,33 +34,6 @@
          $GoogleDriveFileID = $match[1];
          $url_play = "https://docs.google.com/uc?export=open&id=" . $GoogleDriveFileID;
          $url_download = "https://docs.google.com/uc?export=download&id=" . $GoogleDriveFileID;
-
-         //$ch = curl_init();
-         //curl_setopt($ch, CURLOPT_URL, $url_play);
-         ////curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-         ////curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
-         //curl_setopt($ch, CURLOPT_HEADER  ,1);
-         //curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
-         //curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
-         //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-         //$content = curl_exec($ch);
-         ////curl_close($ch);
-         //print_r($content);
-         //// get cookies
-         //$cookies = array();
-         //preg_match_all('/Set-Cookie:(?<cookie>\s{0,}.*)$/im', $content, $cookies);
-         //print_r($cookies['cookie']); // show harvested cookies
-         //$warning = trim(substr($cookies['cookie'][0],0,17));
-
-         //if($warning == "download_warning"){
-         //   $token = explode('=', $cookies['cookie'][0], 2);
-         //   $token = explode(';', $token[1], 2);
-         //   print_r($token);
-         //   $token = trim($token[0], ';');
-         //   echo "TOKEN: $token";
-         //   $url_play = "https://docs.google.com/uc?export=open&confirm=" . $token . "&id=" . $GoogleDriveFileID;
-         //   $url_download = "https://docs.google.com/uc?export=download&confirm=" . $token . "&id=" . $GoogleDriveFileID;
-         //}
       } else {
          $url_play = "";
          $url_download = "";
